@@ -1,16 +1,47 @@
 import time
 st=time.time()
-from lxml import etree
-import pandas as pd
-import multiprocessing
-from selenium import webdriver
+import subprocess
+def install_library(library_name):
+    try:
+        print(f"So Installing {library_name}...")
+        subprocess.check_call(['pip', 'install', library_name])
+        print(f"Successfully installed {library_name}")
+    except subprocess.CalledProcessError as e:
+        file_name="logs.txt"
+        file=open(file_name,'w')
+        file.write(e)
+        file.close()
+        print(f"Failed to install {library_name}/nContact Creator/nGMAIL: connectwithsanthosh@gmail.com\nUPLOAD {file_name} In Current Program Directory For Better Analysis")
+        input("Press Enter To Exit...")
+        exit()
+
+try:
+    from lxml import etree
+except ModuleNotFoundError:
+    print("This Takes Few Moments For First Time Only")
+    print("Module Not Found!!!")
+    install_library("lxml")
+    from lxml import etree
+try:
+    import pandas as pd
+except:
+    print("Module Not Found!!!")
+    install_library("pandas")
+    import pandas as pd
+try:
+    from selenium import webdriver
+except:
+    print("Module Not Found!!!")
+    install_library("selenium")
+    from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 #from selenium.common.exceptions import StaleElementReferenceException,TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+import multiprocessing
 
 loc=input("Enter input(eg: gift shop in vandavasi) : ")
-print("Wait A Moment Getting Your Data From Gmap...")
+print("Wait A Moment Getting Your Data From Gmaps...")
 def page_html(loc,mp):
     headOption = webdriver.FirefoxOptions()
     headOption.add_argument("--headless")
@@ -24,7 +55,7 @@ def page_html(loc,mp):
             driver.execute_script("arguments[0].scrollIntoView();", ele[-1])
             if EC.presence_of_element_located((By.XPATH,"//div[@class='PbZDve ']//p[@class='fontBodyMedium ']//span[@class='HlvSq']")) and EC.invisibility_of_element((By.XPATH,'//div[@class="lXJj5c Hk4XGb "]/div[@class="qjESne veYFef"]')):  
                 if driver.find_element(By.XPATH,"//div[@class='PbZDve ']//p[@class='fontBodyMedium ']//span[@class='HlvSq']").is_displayed():
-                    time.sleep(1)
+                    #time.sleep(1)
                     break
         except NoSuchElementException:
             continue
@@ -42,6 +73,7 @@ with multiprocessing.Manager() as manager:
         p1=multiprocessing.Process(target=page_html,args=(loc,True,))
         p1.start()
     page_html(loc,False)
+    print("Almost There")
     p1.join()
 
     temp=driver_list[0]
@@ -50,7 +82,8 @@ with multiprocessing.Manager() as manager:
         #print(driver_list[i][1])
         temp=driver_list[i] if driver_list[i][1]>temp[1] else temp
     html_content=temp[0]
-    print("\nmax: ",temp[1])
+    # print("\nmax: ",temp[1])
+    print("/n")
 
 
 
@@ -90,6 +123,7 @@ for name,rats,stats_phn_add in zip(NAME,RATTING,STATUS_PHN_ADD):
     full_list.append([name.get('aria-label'),typ.text,rat,Status,phn,address,f'=HYPERLINK("{name.get("href")}", "Link")'])
 
 df=pd.DataFrame(full_list,columns=["NAME","TYPE","STATUS","RATING","PHONE NO.","ADDRESS","LINKS"])
-df.to_excel(f"{loc}.xlsx", index=False)
+df.to_excel(f"{loc}(approx).xlsx", index=False)
+print(f"Your Excel Is Ready Check The Current Direcctory For {loc}.xlsx\nIf You Have Any Issues Please Write To connectwithsanthoshmk@gmail.com")
 t2=time.time()
-print(t2-st)
+# print(t2-st)
