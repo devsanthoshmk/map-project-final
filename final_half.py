@@ -41,11 +41,11 @@ from selenium.webdriver.common.by import By
 import multiprocessing
 
 loc=input("Enter input(eg: gift shop in vandavasi) : ")
-print("Wait A Moment Getting Your Data From Gmaps...")
+print("Wait A Moment Getting Data From Gmaps For You...")
 def page_html(loc,mp):
-    headOption = webdriver.FirefoxOptions()
+    headOption = webdriver.ChromeOptions()
     headOption.add_argument("--headless")
-    driver = webdriver.Firefox(options=headOption)
+    driver = webdriver.Chrome(options=headOption)
     #print("...")
     driver.get(f"https://www.google.com/maps/search/{loc.strip().replace(' ' ,'+')}/@13.0208721,80.1231215,13z/data=!3m1!4b1?entry=ttu")
     driver.implicitly_wait(30)
@@ -83,7 +83,7 @@ with multiprocessing.Manager() as manager:
         temp=driver_list[i] if driver_list[i][1]>temp[1] else temp
     html_content=temp[0]
     # print("\nmax: ",temp[1])
-    print("/n")
+    print("\n")
 
 
 
