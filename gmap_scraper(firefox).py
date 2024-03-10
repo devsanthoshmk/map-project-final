@@ -43,9 +43,9 @@ import multiprocessing
 loc=input("Enter input(eg: gift shop in vandavasi) : ")
 print("Wait A Moment Getting Data From Gmaps For You...")
 def page_html(loc,mp):
-    headOption = webdriver.ChromeOptions()
+    headOption = webdriver.FirefoxOptions()
     headOption.add_argument("--headless")
-    driver = webdriver.Chrome(options=headOption)
+    driver = webdriver.Firefox(options=headOption)
     #print("...")
     driver.get(f"https://www.google.com/maps/search/{loc.strip().replace(' ' ,'+')}/@13.0208721,80.1231215,13z/data=!3m1!4b1?entry=ttu")
     driver.implicitly_wait(30)
@@ -126,4 +126,4 @@ df=pd.DataFrame(full_list,columns=["NAME","TYPE","STATUS","RATING","PHONE NO.","
 df.to_excel(f"{loc}(approx).xlsx", index=False)
 print(f"Your Excel Is Ready Check The Current Direcctory For {loc}(approx).xlsx\nIf You Have Any Issues Please Write To connectwithsanthoshmk@gmail.com")
 t2=time.time()
-# print(t2-st)
+print(t2-st)
