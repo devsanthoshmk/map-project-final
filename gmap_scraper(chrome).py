@@ -112,7 +112,7 @@ for name,rats,stats_phn_add in zip(NAME,RATTING,STATUS_PHN_ADD):
     try:#phone
         phn=stats_phn_add.xpath('./div[2]/span[2]/span[2]')[0].text
     except IndexError:
-        phn="No Specified"
+        phn="Not Specified"
     try:
         address=stats_phn_add.xpath('./div[1]/span[2]/span[2]')[0].text
     except IndexError:
