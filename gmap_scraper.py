@@ -40,12 +40,18 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import multiprocessing
 
-loc=input("Enter input(eg: gift shop in vandavasi) : ")
-print("Wait A Moment Getting Data From Gmaps For You...")
-def page_html(loc,mp):
+def chrome_driver():
     headOption = webdriver.ChromeOptions()
     headOption.add_argument("--headless")
-    driver = webdriver.Chrome(options=headOption)
+    return webdriver.Chrome(options=headOption)
+def firefox_driver():
+    headOption = webdriver.FirefoxOptions()
+    headOption.add_argument("--headless")
+    return webdriver.Firefox(options=headOption)
+
+def page_html(loc,mp):
+    
+    driver=chrome_driver()
     #print("...")
     driver.get(f"https://www.google.com/maps/search/{loc.strip().replace(' ' ,'+')}/@13.0208721,80.1231215,13z/data=!3m1!4b1?entry=ttu")
     driver.implicitly_wait(30)
@@ -66,6 +72,9 @@ def page_html(loc,mp):
 
 #mutiprocessing
 if __name__=='__main__':
+    loc=input("Enter input(eg: gift shop in vandavasi) : ")
+    print("Wait A Moment Getting Data From Gmaps For You...")
+
     html_content=None
     with multiprocessing.Manager() as manager:
         
