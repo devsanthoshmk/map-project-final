@@ -65,65 +65,66 @@ def page_html(loc,mp):
     driver_list.append([source_html,len(ele)])
 
 #mutiprocessing
-html_content=None
-with multiprocessing.Manager() as manager:
-    
-    driver_list=manager.list([])
-    for _ in range(multiprocessing.cpu_count()-1):
-        p1=multiprocessing.Process(target=page_html,args=(loc,True,))
-        p1.start()
-    page_html(loc,False)
-    print("Almost There")
-    p1.join()
-
-    temp=driver_list[0]
-    #print(temp[1])
-    for i in range(1,len(driver_list)):
-        #print(driver_list[i][1])
-        temp=driver_list[i] if driver_list[i][1]>temp[1] else temp
-    html_content=temp[0]
-    # print("\nmax: ",temp[1])
-    print("\n")
-
-
-
-
-
-tree = etree.HTML(html_content)
-NAME=tree.xpath('//a[@class="hfpxzc"]')
-TYPE=tree.xpath('//div[@class="bfdHYd Ppzolf OFBs3e  "]/div[4]/div[1]/div/div/div[2]/div[4]/div[1]/span[1]/span')
-RATTING=tree.xpath('//div[@class="bfdHYd Ppzolf OFBs3e  "]//span[@class="e4rVHe fontBodyMedium"]')
-STATUS_PHN_ADD=tree.xpath('//div[@class="bfdHYd Ppzolf OFBs3e  "]//div[@class="UaQhfb fontBodyMedium"]/div[4]')
-
-full_list=[]
-for name,rats,stats_phn_add in zip(NAME,RATTING,STATUS_PHN_ADD):
-    try:#reviews
-        rat=rats.xpath('.//span[@class="ZkP5Je"]')[0].get('aria-label')
-    except IndexError:
-        rat=rats.text
-    try:#status
-        status=stats_phn_add.xpath('./div[2]/span/span/span[1]')[0].text.strip().split()[0]
-        if status == "Open" or status=="Closed" or status=="Closes":
-            Status="Functioning"
-        else:
-            Status=stats_phn_add.xpath('./div[2]/span/span/span[1]')[0].text
-    except IndexError:
-        Status="Not Specified"
-    try:#phone
-        phn=stats_phn_add.xpath('./div[2]/span[2]/span[2]')[0].text
-    except IndexError:
-        phn="Not Specified"
-    try:
-        address=stats_phn_add.xpath('./div[1]/span[2]/span[2]')[0].text
-    except IndexError:
-        address="Click Here->"
+if __name__=='__main__':
+    html_content=None
+    with multiprocessing.Manager() as manager:
         
-    typ=stats_phn_add.xpath('./div[1]/span[1]/span[1]')[0]
+        driver_list=manager.list([])
+        for _ in range(multiprocessing.cpu_count()-1):
+            p1=multiprocessing.Process(target=page_html,args=(loc,True,))
+            p1.start()
+        page_html(loc,False)
+        print("Almost There")
+        p1.join()
     
-    full_list.append([name.get('aria-label'),typ.text,rat,Status,phn,address,f'=HYPERLINK("{name.get("href")}", "Link")'])
-
-df=pd.DataFrame(full_list,columns=["NAME","TYPE","STATUS","RATING","PHONE NO.","ADDRESS","LINKS"])
-df.to_excel(f"{loc}(approx).xlsx", index=False)
-print(f"Your Excel Is Ready Check The Current Direcctory For {loc}(approx).xlsx\nIf You Have Any Issues Please Write To connectwithsanthoshmk@gmail.com")
-t2=time.time()
-# print(t2-st)
+        temp=driver_list[0]
+        #print(temp[1])
+        for i in range(1,len(driver_list)):
+            #print(driver_list[i][1])
+            temp=driver_list[i] if driver_list[i][1]>temp[1] else temp
+        html_content=temp[0]
+        # print("\nmax: ",temp[1])
+        print("\n")
+    
+    
+    
+    
+    
+    tree = etree.HTML(html_content)
+    NAME=tree.xpath('//a[@class="hfpxzc"]')
+    TYPE=tree.xpath('//div[@class="bfdHYd Ppzolf OFBs3e  "]/div[4]/div[1]/div/div/div[2]/div[4]/div[1]/span[1]/span')
+    RATTING=tree.xpath('//div[@class="bfdHYd Ppzolf OFBs3e  "]//span[@class="e4rVHe fontBodyMedium"]')
+    STATUS_PHN_ADD=tree.xpath('//div[@class="bfdHYd Ppzolf OFBs3e  "]//div[@class="UaQhfb fontBodyMedium"]/div[4]')
+    
+    full_list=[]
+    for name,rats,stats_phn_add in zip(NAME,RATTING,STATUS_PHN_ADD):
+        try:#reviews
+            rat=rats.xpath('.//span[@class="ZkP5Je"]')[0].get('aria-label')
+        except IndexError:
+            rat=rats.text
+        try:#status
+            status=stats_phn_add.xpath('./div[2]/span/span/span[1]')[0].text.strip().split()[0]
+            if status == "Open" or status=="Closed" or status=="Closes":
+                Status="Functioning"
+            else:
+                Status=stats_phn_add.xpath('./div[2]/span/span/span[1]')[0].text
+        except IndexError:
+            Status="Not Specified"
+        try:#phone
+            phn=stats_phn_add.xpath('./div[2]/span[2]/span[2]')[0].text
+        except IndexError:
+            phn="Not Specified"
+        try:
+            address=stats_phn_add.xpath('./div[1]/span[2]/span[2]')[0].text
+        except IndexError:
+            address="Click Here->"
+            
+        typ=stats_phn_add.xpath('./div[1]/span[1]/span[1]')[0]
+        
+        full_list.append([name.get('aria-label'),typ.text,rat,Status,phn,address,f'=HYPERLINK("{name.get("href")}", "Link")'])
+    
+    df=pd.DataFrame(full_list,columns=["NAME","TYPE","STATUS","RATING","PHONE NO.","ADDRESS","LINKS"])
+    df.to_excel(f"{loc}(approx).xlsx", index=False)
+    print(f"Your Excel Is Ready Check The Current Direcctory For {loc}(approx).xlsx\nIf You Have Any Issues Please Write To connectwithsanthoshmk@gmail.com")
+    t2=time.time()
+    # print(t2-st)
