@@ -29,6 +29,11 @@ try:
         install_library("pandas")
         import pandas as pd
     try:
+        import openpyxl
+    except:
+        print("Module Not Found!!!")
+        install_library("openpyxl")
+    try:
         from selenium import webdriver
     except:
         print("Module Not Found!!!")
