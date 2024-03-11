@@ -24,7 +24,7 @@ def page_html(loc,mp):
             driver.execute_script("arguments[0].scrollIntoView();", ele[-1])
             if EC.presence_of_element_located((By.XPATH,"//div[@class='PbZDve ']//p[@class='fontBodyMedium ']//span[@class='HlvSq']")) and EC.invisibility_of_element((By.XPATH,'//div[@class="lXJj5c Hk4XGb "]/div[@class="qjESne veYFef"]')):  
                 if driver.find_element(By.XPATH,"//div[@class='PbZDve ']//p[@class='fontBodyMedium ']//span[@class='HlvSq']").is_displayed():
-                    time.sleep(1)
+                    # time.sleep(1)
                     break
         except NoSuchElementException:
             continue
